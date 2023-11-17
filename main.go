@@ -97,33 +97,35 @@ func parse(vGeositeData []byte) (map[string][]geosite.Item, error) {
 					attributes[attribute.Key] = append(attributes[attribute.Key], domain)
 				}
 			}
-			switch domain.Type {
-			case routercommon.Domain_Plain:
-				domains = append(domains, geosite.Item{
-					Type:  geosite.RuleTypeDomainKeyword,
-					Value: domain.Value,
-				})
-			case routercommon.Domain_Regex:
-				domains = append(domains, geosite.Item{
-					Type:  geosite.RuleTypeDomainRegex,
-					Value: domain.Value,
-				})
-			case routercommon.Domain_RootDomain:
-				if strings.Contains(domain.Value, ".") {
+			if strings.Compare(code, "gfw") == 0 {
+				switch domain.Type {
+				case routercommon.Domain_Plain:
+					domains = append(domains, geosite.Item{
+						Type:  geosite.RuleTypeDomainKeyword,
+						Value: domain.Value,
+					})
+				case routercommon.Domain_Regex:
+					domains = append(domains, geosite.Item{
+						Type:  geosite.RuleTypeDomainRegex,
+						Value: domain.Value,
+					})
+				case routercommon.Domain_RootDomain:
+					if strings.Contains(domain.Value, ".") {
+						domains = append(domains, geosite.Item{
+							Type:  geosite.RuleTypeDomain,
+							Value: domain.Value,
+						})
+					}
+					domains = append(domains, geosite.Item{
+						Type:  geosite.RuleTypeDomainSuffix,
+						Value: "." + domain.Value,
+					})
+				case routercommon.Domain_Full:
 					domains = append(domains, geosite.Item{
 						Type:  geosite.RuleTypeDomain,
 						Value: domain.Value,
 					})
 				}
-				domains = append(domains, geosite.Item{
-					Type:  geosite.RuleTypeDomainSuffix,
-					Value: "." + domain.Value,
-				})
-			case routercommon.Domain_Full:
-				domains = append(domains, geosite.Item{
-					Type:  geosite.RuleTypeDomain,
-					Value: domain.Value,
-				})
 			}
 		}
 		domainMap[code] = common.Uniq(domains)
