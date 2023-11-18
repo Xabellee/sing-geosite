@@ -97,7 +97,9 @@ func parse(vGeositeData []byte) (map[string][]geosite.Item, error) {
 					attributes[attribute.Key] = append(attributes[attribute.Key], domain)
 				}
 			}
-			if strings.Compare(code, "gfw") == 0 {
+			if strings.Compare(code, "gfw") == 0 || strings.Compare(code, "cn") == 0 || strings.Compare(code, "category-ads-all") == 0 ||
+				strings.Compare(code, "category-ads-all") == 0 || strings.Compare(code, "googlefcm") == 0 || strings.Compare(code, "apple") == 0 ||
+				strings.Compare(code, "microsoft") == 0 || strings.Compare(code, "private") == 0 {
 				switch domain.Type {
 				case routercommon.Domain_Plain:
 					domains = append(domains, geosite.Item{
